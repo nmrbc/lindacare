@@ -2,33 +2,71 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>MarketTradeProcessor</groupId>
 	<artifactId>MarketTradeProcessor</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 	<name>Market Trade Processor</name>
 	<description>Market Trade Processor - LindaCare technical test</description>
 
+	<!-- General properties -->
+	<properties>
+	    <warFileName>${project.artifactId}##${project.version}</warFileName>
+	</properties>
+	
+	<!-- Specific repositories -->
+	<repositories>
+        <!-- for javax servlet -->
+        <repository>
+            <id>nexus</id>
+            <url>https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases/</url>
+        </repository>
+	</repositories>
+	
 	<!-- The project dependencies -->
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 			<groupId>asm</groupId> -->
-<!-- 			<artifactId>asm-all</artifactId> -->
-<!-- 			<version>3.3.1</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.sun.jersey</groupId> -->
-<!-- 			<artifactId>jersey-bundle</artifactId> -->
-<!-- 			<version>1.14</version> -->
-<!-- 		</dependency> -->
+        <!-- mysql connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.18</version>
+        </dependency>
+	    
+		<!-- hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.2.0.Final</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>3.0.1</version>
+		    <scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20090211</version>
+			<version>20170516</version>
 		</dependency>
 	</dependencies>
 
 	<!-- Build configuration -->
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+        <finalName>${warFileName}</finalName>
+	    
+        <sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

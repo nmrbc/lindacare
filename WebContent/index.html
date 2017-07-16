@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />    
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+
+	<link type="text/css" rel="stylesheet" href="resources/style.css">
+	<link rel="icon" type="image/ico" href="resources/favicon.png" />
+
+	<title>LindaCare Technical Test - Market Trade Processor</title>
+</head>
+
+<body>
+	<h1>Trades Visualizer</h1>
+	<p id="tradesTableHolder"></p>
+	<h2>Trade Statistics</h2>
+	<p id="tradeStatisticsHolder"></p>
+	<p id="statisticGraphsHolder"></p>
+
+	<script>
+		var txt = "", tableRows = 15, row;
+
+		function clearTable(fromRowIdx) {
+			if (fromRowIdx === undefined) {
+				fromRowIdx =0;
+			}
+			var i;
+			for (i=fromRowIdx; i < tableRows; i++) {
+				fillTableRow(i, "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp");
+			}
+		}
+
+		function fillTableRow(rowNum, uid, fcur, tcur, ams, amb, rate, plo, cnt) {
+			var row = "row" + rowNum;
+			document.getElementById(row + "uid").innerHTML = uid;
+			document.getElementById(row + "fcur").innerHTML = fcur;
+			document.getElementById(row + "tcur").innerHTML = tcur;
+			document.getElementById(row + "ams").innerHTML = ams;
+			document.getElementById(row + "amb").innerHTML = amb;
+			document.getElementById(row + "rate").innerHTML = rate;
+			document.getElementById(row + "plo").innerHTML = plo;
+			document.getElementById(row + "cnt").innerHTML = cnt;
+		}
+
+		function getLastTrades() {
+			var obj = { "method":"getLastTrades", "numTrades":tableRows };
+			var methodAndParams = JSON.stringify(obj);
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var myObj = JSON.parse(this.responseText)["list"];
+					var myObj2, x=-1;
+					
+					for (x in myObj) {
+						myObj2 = JSON.parse(myObj[x]);
+						fillTableRow(x, 
+									myObj2.userId, 
+									myObj2.currencyFrom, 
+									myObj2.currencyTo, 
+									myObj2.amountSell, 
+									myObj2.amountBuy, 
+									myObj2.rate, 
+									myObj2.timePlaced, 
+									myObj2.originatingCountry);
+					}
+					clearTable(x+1);
+				}
+			};
+			xmlhttp.open("POST", window.location.href + "/cs", true);
+			xmlhttp.setRequestHeader("Content-type", "application/json");
+			xmlhttp.send(methodAndParams);
+		}
+		
+		
+		function getStatistics() {
+			var obj = { "method":"getStatistics" };
+			var methodAndParams = JSON.stringify(obj);
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var myObj = JSON.parse(this.responseText);
+					var txt = "";
+					
+					txt += "<table border='0'>";
+					txt += "<tr id=\"header\"><th>All Time Statistics</th><th>Last 5 minutes</th></tr>";
+					txt += "<tr><td>Trade number: " + myObj.tn + "</td><td>Trade number: " + myObj.tn5 + "</td></tr>";
+					txt += "<tr><td>Top sell amount: " + myObj.tsv + "</td><td>Num sells above 1000: " + myObj.nsa + "</td></tr>";
+					txt += "<tr><td>Top buy amount: " + myObj.tbv + "</td><td>Num buys above 1000: " + myObj.nba + "</td></tr>";
+					txt += "</table>";
+					document.getElementById("tradeStatisticsHolder").innerHTML = txt;
+					document.getElementById("statisticGraphsHolder").innerHTML = myObj.grp;
+				}
+			};
+			xmlhttp.open("POST", window.location.href + "/cs", true);
+			xmlhttp.setRequestHeader("Content-type", "application/json");
+			xmlhttp.send(methodAndParams);
+		}
+		
+		
+		// build the table
+		txt += "<table border='1'>";
+		txt += "<tr id=\"header\"><th>User ID</th><th>From Currency</th><th>To Currency</th><th>Amount To Sell</th><th>Amount To Buy</th><th>Rate</th><th>Placed On</th><th>Country</th></tr>";
+		for (i=0; i< tableRows; i++) {
+			row = "row" + i;
+			txt += "<tr><td id='" + row + "uid'>&nbsp</td>";
+			txt += "<td id='" + row + "fcur'>&nbsp</td>";
+			txt += "<td id='" + row + "tcur'>&nbsp</td>";
+			txt += "<td id='" + row + "ams'>&nbsp</td>";
+			txt += "<td id='" + row + "amb'>&nbsp</td>";
+			txt += "<td id='" + row + "rate'>&nbsp</td>";
+			txt += "<td id='" + row + "plo'>&nbsp</td>";
+			txt += "<td id='" + row + "cnt'>&nbsp</td></tr>";
+		}
+		txt += "</table>";
+		document.getElementById("tradesTableHolder").innerHTML = txt;
+
+		// get trade data with a 1 sec pooling
+		setInterval(getLastTrades, 1000);
+		// get trade statistics with a 10 sec pooling
+		setInterval(getStatistics, 10000);
+
+	</script>
+
+</body>
+</html>

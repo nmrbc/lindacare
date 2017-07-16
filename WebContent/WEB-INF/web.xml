@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>MarketTradeProcessor</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
+	<display-name>MarketTradeProcessor</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+  
+	<!-- Listener for statistics calculation job -->
+	<listener>
+        <listener-class>pt.ncastro.markettradeprocessor.service.StatisticsCalculatorJob</listener-class>
+    </listener>
+
+	<!-- The integration service -->
+	<servlet>
+		<servlet-name>tradeService</servlet-name>
+		<servlet-class>pt.ncastro.markettradeprocessor.service.TradeServiceServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>tradeService</servlet-name>
+		<url-pattern>/ts</url-pattern>
+	</servlet-mapping>
+  
+	<!-- The frontend communication service -->
+	<servlet>
+		<servlet-name>clientService</servlet-name>
+		<servlet-class>pt.ncastro.markettradeprocessor.service.ClientServiceServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>clientService</servlet-name>
+		<url-pattern>/cs</url-pattern>
+	</servlet-mapping>
+  
 </web-app>
