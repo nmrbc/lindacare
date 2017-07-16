@@ -45,7 +45,7 @@ public class TradeServiceServletTest {
 
 				// send it to server
 				try {
-					URL url = new URL("http://127.0.0.1/MarketTradeProcessor/ts");
+					URL url = new URL("https://mkttradeprocessor.herokuapp.com/ts");
 					URLConnection connection = url.openConnection();
 					connection.setDoOutput(true);
 					connection.setRequestProperty("Content-Type", "application/json");
